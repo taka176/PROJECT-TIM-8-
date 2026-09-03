@@ -1,10 +1,11 @@
 "use client";
 
+import { TodoStatus } from "@/lib/todos.service";
 import TaskItem, { Task } from "./TodoItemItem";
 
 interface TaskListProps {
   tasks: Task[];
-  ToggleTugas: (id: string) => void;
+  ToggleTugas: (id: number, status: TodoStatus) => void;
 }
 
 export default function TodoTaskFilter({ tasks, ToggleTugas }: TaskListProps) {
@@ -19,7 +20,7 @@ export default function TodoTaskFilter({ tasks, ToggleTugas }: TaskListProps) {
   return (
     <div className="flex flex-col gap-1 my-3">
       {tasks.map((task) => (
-        <TaskItem key={task.id} task={task} ToggleTugas={ToggleTugas} />
+        <TaskItem key={task.id} task={task} onToggle={ToggleTugas} />
       ))}
     </div>
   );

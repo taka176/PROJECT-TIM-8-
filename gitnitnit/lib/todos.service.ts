@@ -1,13 +1,18 @@
 import { db } from "@/src/config/db";
 import { tableList } from "@/src/config/schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 
 export type TodoStatus = "done" | "in progres" | "deleted";
 
 export class TodosService {
   getAll = async () => {
     try {
-      const result = await db.select().from(tableList);
+      const result = await db
+        .select()
+        .from(tableList)
+        .where(
+          or(eq(tableList.status, "in progres"), eq(tableList.status, "done")),
+        );
 
       if (result.length == 0) {
         return {
