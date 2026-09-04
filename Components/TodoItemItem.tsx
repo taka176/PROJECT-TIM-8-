@@ -92,7 +92,7 @@ export default function TodoItemItem({
           <span
             className={`text-sm select-none ${
               task.status === "done"
-                ? "text-green-400"
+                ? "text-green-300"
                 : task.completed
                   ? "text-gray-400 line-through"
                   : "text-gray-700"
