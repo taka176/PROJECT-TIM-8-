@@ -184,13 +184,11 @@ export class TodosService {
       return {
         success: true,
         message: "data dihapus",
-        data: result,
       };
     } catch (error: any) {
       return {
         success: false,
         message: "Internal server error",
-        data: error.message,
       };
     }
   };

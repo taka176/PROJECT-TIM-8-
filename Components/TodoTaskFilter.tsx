@@ -6,9 +6,14 @@ import TaskItem, { Task } from "./TodoItemItem";
 interface TaskListProps {
   tasks: Task[];
   ToggleTugas: (id: number, status: TodoStatus) => void;
+  EditTugas: (id: number, text: string) => void;
 }
 
-export default function TodoTaskFilter({ tasks, ToggleTugas }: TaskListProps) {
+export default function TodoTaskFilter({
+  tasks,
+  ToggleTugas,
+  EditTugas,
+}: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="py-8 text-center text-sm text-gray-400">
@@ -20,7 +25,12 @@ export default function TodoTaskFilter({ tasks, ToggleTugas }: TaskListProps) {
   return (
     <div className="flex flex-col gap-1 my-3">
       {tasks.map((task) => (
-        <TaskItem key={task.id} task={task} onToggle={ToggleTugas} />
+        <TaskItem
+          key={task.id}
+          task={task}
+          onToggle={ToggleTugas}
+          onEdit={EditTugas}
+        />
       ))}
     </div>
   );

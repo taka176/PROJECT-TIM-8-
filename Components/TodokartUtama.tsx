@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import TodoHeader from "./TodoHeader"; //Judul+sub
 import TodoInputDlu from "./TodoInputDlu"; //KetikTask
 import TodoTaskFilter from "./TodoTaskFilter"; //List2
-import TodoTombolFilternya, { FilterStatus } from "./TodoTombolFilternya"; //Tombol pling bawah filter
+import TodoTombolFilternya from "./TodoTombolFilternya"; //Tombol pling bawah filter
 import { Task } from "./TodoItemItem";
 import TodoItemItem from "./TodoItemItem";
 import { TodoStatus } from "@/lib/todos.service";
@@ -109,6 +109,23 @@ export default function TodokartUtama() {
   };
   console.log(tasks);
 
+  const filteredTasks = tasks.filter((task) => {
+    return task.status === filter;
+  });
+
+  const editTask = (id: number, text: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              text: text,
+            }
+          : task,
+      ),
+    );
+  };
+
   return (
     <div className="w-full max-w-md bg-white rounded-3xl p-8 shadow-xl border border-gray-100/50">
       {/* 1. Header Dinamis */}
@@ -122,27 +139,25 @@ export default function TodokartUtama() {
       <TodoInputDlu TambahData={addTask} />
 
       <div>
-        {tasks.map((items) => {
+        {filteredTasks.map((items) => {
           return (
-            <div
-              className="flex justify-items-start items-center text-black"
-              key={items.id}
-            >
-              <TodoItemItem key={items.id} task={items} onToggle={toggleTask} />
+            <div key={items.id}>
+              {/* <div className="flex justify-items-start items-center text-black">
+                <TodoItemItem task={items} onToggle={toggleTask} />
+              </div> */}
+
+              <TodoTaskFilter tasks={[items]} ToggleTugas={toggleTask} EditTugas={editTask} />
             </div>
           );
         })}
       </div>
 
-      {/* 3. Daftar Tugas */}
-      {/* <TodoTaskFilter tasks={filteredTasks} ToggleTugas={ToggleTugas} /> */}
-
       {/* 4. Footer & Filter */}
-      {/* <TodoTombolFilternya
-        remainingCount={remainingCount}
+      <TodoTombolFilternya
+        remainingCount={filteredTasks.length}
         currentFilter={filter}
         setFilter={setFilter}
-      /> */}
+      />
     </div>
   );
 }
