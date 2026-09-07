@@ -8,3 +8,10 @@ export const tableList = pgTable("table_list", {
   status : todosStatus("status").default("in progres").notNull(),
   createdAT : timestamp("created_at").defaultNow().notNull()    
 });
+
+export const userTable = pgTable("userTable", {
+  id : integer().primaryKey().generatedAlwaysAsIdentity(),
+  username : varchar("username", {length: 59}).notNull(),
+  email : varchar("email", {length : 60}).notNull().unique(),
+  password : varchar("password", {length: 60}).notNull()
+})
