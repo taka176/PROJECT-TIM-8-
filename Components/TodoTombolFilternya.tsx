@@ -1,11 +1,12 @@
 "use client";
 
-export type FilterStatus = "all" | "active" | "completed";
+// export type FilterStatus = "all" | "active" | "completed";
+import { TodoStatus } from "@/lib/todos.service";
 
 interface TodoTombolFilternyaProps {
   remainingCount: number;
-  currentFilter: FilterStatus;
-  setFilter: (filter: FilterStatus) => void;
+  currentFilter: TodoStatus;
+  setFilter: (filter: TodoStatus) => void;
 }
 
 export default function TodoTombolFilternya({
@@ -13,7 +14,7 @@ export default function TodoTombolFilternya({
   currentFilter,
   setFilter,
 }: TodoTombolFilternyaProps) {
-  const FilterButton: FilterStatus[] = ["all", "active", "completed"];
+  const FilterButton: TodoStatus[] = ["done", "in progres"];
 
   return (
     <div className="flex items-center justify-between pt-4 mt-2 border-t border-gray-100 text-xs font-medium">
