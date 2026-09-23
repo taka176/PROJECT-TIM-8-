@@ -1,4 +1,4 @@
-# GitNitNit
+# Todolist
 
 Aplikasi Todo List berbasis web yang dibangun dengan Next.js, mengintegrasikan autentikasi JWT dan database PostgreSQL melalui Drizzle ORM. Aplikasi ini dirancang untuk membantu pengguna mengelola tugas harian dengan antarmuka yang bersih dan minimalis.
 
