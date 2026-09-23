@@ -64,21 +64,17 @@ export default function Register({
   return (
     // WRAPPER: 2 kolom -> kiri panel branding, kanan form
     <div className="flex min-h-screen w-full overflow-hidden rounded-2xl bg-white">
-      {/* ================= KIRI: PANEL BRANDING ================= */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-slate-100 via-indigo-50 to-white p-10 md:flex">
-        {/* Logo */}
         <div className="flex items-center gap-2 text-sm font-semibold text-indigo-600">
           <CheckCircle2 className="h-4 w-4" strokeWidth={2.5} />
           <span>To-DO List</span>
         </div>
 
-        {/* Headline utama */}
         <div className="max-w-sm">
           <h1 className="font-serif text-3xl italic leading-snug text-slate-800">
             Selesaikan tugasmu satu per satu.
           </h1>
 
-          {/* List fitur/value prop - gampang nambah item baru, tinggal copy block <li> */}
           <ul className="mt-10 space-y-6">
             <li className="flex gap-3">
               <Target className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500" />
@@ -117,7 +113,6 @@ export default function Register({
         </p>
       </div>
 
-      {/* ================= KANAN: FORM REGISTER ================= */}
       <div className="flex w-full flex-col justify-center px-8 py-10 md:w-1/2 md:px-16">
         <div className="mx-auto w-full max-w-sm">
           <h2 className="font-serif text-2xl text-slate-900">Buat Akun</h2>
@@ -125,7 +120,6 @@ export default function Register({
             Bergabunglah untuk memulai perjalanan produktif Anda.
           </p>
 
-          {/* Pesan error dari backend, cuma muncul kalau ada errorMessage */}
           {errorMessage && (
             <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
               {errorMessage}
@@ -221,7 +215,6 @@ export default function Register({
               </div>
             </div>
 
-            {/* Tombol submit -> ini yang manggil onSubmit ke backend */}
             <button
               type="submit"
               disabled={isLoading}
@@ -238,7 +231,6 @@ export default function Register({
             <div className="h-px flex-1 bg-slate-200" />
           </div>
 
-          {/* Social login - handler dikirim lewat props, tinggal diisi temen lo */}
           <div className="space-y-2">
             <button
               type="button"
