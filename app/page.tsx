@@ -81,7 +81,7 @@ export default function Home() {
   };
 
   return (
-    <main>
+    <main className="flex-1 flex items-center justify-center">
       {currentView === "login" && (
         <Loginril
           onNavigateToRegister={() => {
