@@ -1,0 +1,31 @@
+import { SignJWT, jwtVerify } from "jose";
+
+const secret = process.env.JWT_SECRET;
+
+if (!secret) {
+  throw new Error("JWT_SECRET belum diset");
+}
+
+const secretKey = new TextEncoder().encode(secret);
+
+export async function createToken(userId: number) {
+  return await new SignJWT({
+    userId,
+  })
+    .setProtectedHeader({
+      alg: "HS256",
+    })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(secretKey);
+}
+
+export async function verifyToken(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, secretKey);
+
+    return payload;
+  } catch {
+    return null;
+  }
+}
