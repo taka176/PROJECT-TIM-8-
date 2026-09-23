@@ -7,12 +7,15 @@ interface TaskListProps {
   tasks: Task[];
   ToggleTugas: (id: number, status: TodoStatus) => void;
   EditTugas: (id: number, text: string) => void;
+  onRemoveTask?: (id: number) => void;
+  onRefresh?: () => Promise<void>;
 }
 
 export default function TodoTaskFilter({
   tasks,
   ToggleTugas,
   EditTugas,
+  onRemoveTask,
 }: TaskListProps) {
   if (tasks.length === 0) {
     return (
@@ -30,6 +33,7 @@ export default function TodoTaskFilter({
           task={task}
           onToggle={ToggleTugas}
           onEdit={EditTugas}
+          onDelete={onRemoveTask}
         />
       ))}
     </div>

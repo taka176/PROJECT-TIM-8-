@@ -1,87 +1,58 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import TodoHeader from "./TodoHeader"; //Judul+sub
-import TodoInputDlu from "./TodoInputDlu"; //KetikTask
-import TodoTaskFilter from "./TodoTaskFilter"; //List2
-import TodoTombolFilternya from "./TodoTombolFilternya"; //Tombol pling bawah filter
+import { useState, useEffect, useCallback } from "react";
+import TodoHeader from "./TodoHeader";
+import TodoInputDlu from "./TodoInputDlu";
+import TodoTaskFilter from "./TodoTaskFilter";
+import TodoTombolFilternya from "./TodoTombolFilternya";
 import { Task } from "./TodoItemItem";
-import TodoItemItem from "./TodoItemItem";
 import { TodoStatus } from "@/lib/todos.service";
 import { getAllData } from "@/action/todos.action";
-import { getDataByStatus } from "@/action/todos.action";
-
-// Data boong2an awal
-// const initialTasks: Task[] = [
-//   { id: "1", text: "Contoh pertama", completed: false },
-//   { id: "2", text: "Contoh kedua", completed: false },
-//   { id: "3", text: "Send initial wireframes to client", completed: true },
-// ];
-
-// hastg1
+import { logoutAction } from "@/action/auth/auth.action";
 
 type dataTodos = {
   id: number;
   todos: string;
   status: TodoStatus;
-  createdAT: string;
+  createdAT: Date;
 };
 
 export default function TodokartUtama() {
-  // const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<TodoStatus>("in progres");
   const [message, setMessage] = useState("");
-  // const tambahinTask = (text: string) => {
+  const [isLoading, setIsLoading] = useState(true);
 
-  //   const newTask: Task = {
-  //     id: Date.now().toString(),
-  //     text,
-  //     completed: false,
-  //   };
-  //   setTasks([newTask, ...tasks]);
-  // };
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    const datas = await getAllData();
 
-  // hashtg2
-  // const ToggleTugas = (id: string) => {
-  //   setTasks(
-  //     tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-  //   );
-  // };
+    if (!datas.success || !("data" in datas) || !datas.data) {
+      setMessage(datas.message);
+      setTasks([]);
+      setIsLoading(false);
+      return;
+    }
 
-  // tiga3
-  // const filteredTasks = tasks.filter((task) => {
-  //   if (filter === "active") return !task.completed;
-  //   if (filter === "completed") return task.completed;
-  //   return true;
-  // });
+    const todos: Task[] = (datas.data as unknown as dataTodos[]).map((item) => ({
+      id: item.id,
+      text: item.todos,
+      completed: item.status === "done",
+      status: item.status,
+    }));
 
-  // 4
-  // const remainingCount = tasks.filter((task) => !task.completed).length;
-  useEffect(() => {
-    const allData = async () => {
-      const datas = await getAllData();
-      if (!datas.success) {
-        return setMessage(datas.message);
-      }
-
-      if (!datas.data) {
-        return setMessage(datas.message);
-      }
-
-      // Data database → data yang dibutuhkan TodoItemItem
-      const todos: Task[] = datas.data.map((item: dataTodos) => ({
-        id: item.id,
-        text: item.todos,
-        completed: item.status === "done",
-        status: item.status,
-      }));
-
-      return setTasks(todos);
-    };
-
-    allData();
+    setTasks(todos);
+    setMessage("");
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refreshData = useCallback(async () => {
+    await fetchData();
+  }, [fetchData]);
 
   const toggleTask = (id: number, status: TodoStatus) => {
     setTasks((prevTasks) =>
@@ -107,11 +78,9 @@ export default function TodokartUtama() {
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
   };
-  console.log(tasks);
 
-  const filteredTasks = tasks.filter((task) => {
-    return task.status === filter;
-  });
+  const filteredTasks = tasks.filter((task) => task.status === filter);
+  const remainingCount = tasks.filter((task) => task.status === "in progres").length;
 
   const editTask = (id: number, text: string) => {
     setTasks((prevTasks) =>
@@ -126,38 +95,56 @@ export default function TodokartUtama() {
     );
   };
 
+  const removeTask = (id: number) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  };
+
+  const handleLogout = async () => {
+    await logoutAction();
+    window.location.reload();
+  };
+
   return (
     <div className="w-full max-w-md bg-white rounded-3xl p-8 shadow-xl border border-gray-100/50">
-      {/* 1. Header Dinamis */}
       <TodoHeader
         Judul="Apa fokusmu hari ini?"
         Deskripsi="Mari selesaikan satu per satu."
       />
 
-      {/* 2. Form Input Tugas */}
+      <TodoInputDlu TambahData={addTask} onRefresh={refreshData} />
 
-      <TodoInputDlu TambahData={addTask} />
+      {isLoading ? (
+        <div className="py-8 text-center text-sm text-gray-400">
+          Memuat data...
+        </div>
+      ) : (
+        <TodoTaskFilter
+          tasks={filteredTasks}
+          ToggleTugas={toggleTask}
+          EditTugas={editTask}
+          onRemoveTask={removeTask}
+          onRefresh={refreshData}
+        />
+      )}
 
-      <div>
-        {filteredTasks.map((items) => {
-          return (
-            <div key={items.id}>
-              {/* <div className="flex justify-items-start items-center text-black">
-                <TodoItemItem task={items} onToggle={toggleTask} />
-              </div> */}
+      {message && !isLoading && (
+        <p className="text-sm text-gray-400 text-center py-4">{message}</p>
+      )}
 
-              <TodoTaskFilter tasks={[items]} ToggleTugas={toggleTask} EditTugas={editTask} />
-            </div>
-          );
-        })}
-      </div>
-
-      {/* 4. Footer & Filter */}
       <TodoTombolFilternya
-        remainingCount={filteredTasks.length}
+        remainingCount={remainingCount}
         currentFilter={filter}
         setFilter={setFilter}
       />
+
+      <div className="flex justify-end pt-3">
+        <button
+          onClick={handleLogout}
+          className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+        >
+          Keluar
+        </button>
+      </div>
     </div>
   );
 }

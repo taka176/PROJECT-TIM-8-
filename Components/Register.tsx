@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { CheckCircle2, Eye, EyeOff, Target, Sparkles } from "lucide-react";
 
 export interface RegisterFormData {
@@ -37,8 +36,6 @@ export default function Register({
   errorMessage,
   redirectTo = "/",
 }: RegisterProps) {
-  const router = useRouter();
-
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,16 +46,12 @@ export default function Register({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const result = await onSubmit?.({
+    await onSubmit?.({
       fullName,
       email,
       password,
       confirmPassword,
     });
-
-    if (result !== false) {
-      router.push(redirectTo);
-    }
   };
 
   return (

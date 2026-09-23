@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
   Eye,
@@ -42,8 +41,6 @@ export default function Loginril({
   errorMessage,
   redirectTo = "/",
 }: LoginProps) {
-  const router = useRouter();
-
   // ---------- FORM STATE (controlled inputs) ----------
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,13 +50,7 @@ export default function Loginril({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Panggil onSubmit dari props wok
-    const result = await onSubmit?.({ email, password, rememberMe });
-
-    // Kalau result tidak false eksplisit, baru jalankan router.push
-    if (result !== false) {
-      router.push(redirectTo);
-    }
+    await onSubmit?.({ email, password, rememberMe });
   };
 
   return (
