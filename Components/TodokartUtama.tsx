@@ -8,7 +8,6 @@ import TodoTombolFilternya from "./TodoTombolFilternya";
 import { Task } from "./TodoItemItem";
 import { TodoStatus } from "@/lib/todos.service";
 import { getAllData } from "@/action/todos.action";
-import { logoutAction } from "@/action/auth/auth.action";
 
 type dataTodos = {
   id: number;
@@ -17,11 +16,16 @@ type dataTodos = {
   createdAT: Date;
 };
 
-export default function TodokartUtama() {
+interface TodokartUtamaProps {
+  onLogout?: () => void;
+}
+
+export default function TodokartUtama({ onLogout }: TodokartUtamaProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<TodoStatus>("in progres");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -100,8 +104,15 @@ export default function TodokartUtama() {
   };
 
   const handleLogout = async () => {
-    await logoutAction();
-    window.location.reload();
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+
+    try {
+      onLogout?.();
+    } catch {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -140,9 +151,10 @@ export default function TodokartUtama() {
       <div className="flex justify-end pt-3">
         <button
           onClick={handleLogout}
-          className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+          disabled={isLoggingOut}
+          className="text-xs text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Keluar
+          {isLoggingOut ? "Keluar..." : "Keluar"}
         </button>
       </div>
     </div>
