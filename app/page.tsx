@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Loginril from "../Components/Loginril";
 import Register from "../Components/Register";
 import TodokartUtama from "../Components/TodokartUtama";
-import { loginAction, registerAction, getUserLogin } from "@/action/auth/auth.action";
+import { loginAction, registerAction, getUserLogin, logoutAction } from "@/action/auth/auth.action";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"login" | "register" | "todo">(
@@ -80,6 +80,11 @@ export default function Home() {
     }
   };
 
+  const handleLogout = async () => {
+    await logoutAction();
+    setCurrentView("login");
+  };
+
   return (
     <main className="flex-1 flex items-center justify-center">
       {currentView === "login" && (
@@ -106,7 +111,7 @@ export default function Home() {
         />
       )}
 
-      {currentView === "todo" && <TodokartUtama />}
+      {currentView === "todo" && <TodokartUtama onLogout={handleLogout} />}
     </main>
   );
 }
